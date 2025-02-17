@@ -1,5 +1,6 @@
 #include "ProcesadorArchivos.h"
 
+// Imprime la ayuda del programa
 void printHelp() {
     std::cout << "Uso: procesador_archivos [OPCION] [ARCHIVO]\n";
     std::cout << "Opciones:\n";
@@ -11,10 +12,12 @@ void printHelp() {
     std::cout << "  -v, --version                Muestra la versión del programa\n";
 }
 
+// Imprime la versión del programa
 void printVersion() {
     std::cout << "Procesador de Archivos v1.0\n";
 }
 
+// Comprime el archivo especificado usando Run-Length Encoding (RLE)
 int compressFile(const std::string& filename) {
     int inputFd = open(filename.c_str(), O_RDONLY);
     if (inputFd == -1) {
@@ -62,6 +65,7 @@ int compressFile(const std::string& filename) {
     return 0;
 }
 
+// Descomprime el archivo especificado usando Run-Length Encoding (RLE)
 int decompressFile(const std::string& filename) {
     int inputFd = open(filename.c_str(), O_RDONLY);
     if (inputFd == -1) {
@@ -95,6 +99,7 @@ int decompressFile(const std::string& filename) {
     return 0;
 }
 
+// Función principal que maneja los argumentos y llama a las funciones correspondientes
 int main(int argc, char* argv[]) {
     if (argc < 2) {
         printHelp();

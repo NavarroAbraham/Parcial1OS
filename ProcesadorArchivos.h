@@ -11,9 +11,9 @@
 // Prototipos de funciones (Declaraciones)
 void PrintHelp();
 void PrintVersion();
-int ComprimirArchivo(const std::string& filename);
-int DescomprimirArchivo(const std::string& filename);
-int EncriptarArchivo(const std::string& filename);
-int DesencriptarArchivo(const std::string& filename);
+int compressFile(const std::string& filename);
+int decompressFile(const std::string& filename);
+int encryptFile(const std::string& filename);
+int decryptFile(const std::string& filename);
 
 #endif // ProcesadorArchivos.h
