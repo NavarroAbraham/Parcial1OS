@@ -20,66 +20,66 @@ void printVersion() {
 }
 
 // Comprime el archivo especificado usando Run-Length Encoding (RLE)
-int compressFile(const std::string& filename) {
-    int inputFd = open(filename.c_str(), O_RDONLY);
-    if (inputFd == -1) {
+int compressFile(const std::string& fileName) {
+    int inputFile = open(fileName.c_str(), O_RDONLY);
+    if (inputFile == -1) {
         std::cerr << "Error: No se pudo abrir el archivo." << std::endl;
         return -1;
     }
     
-    std::string outputFilename = filename + ".rle";
-    int outputFd = open(outputFilename.c_str(), O_WRONLY | O_CREAT | O_TRUNC, 0644);
-    if (outputFd == -1) {
+    std::string outputFileName = fileName + ".rle";
+    int outputFile = open(outputFileName.c_str(), O_WRONLY | O_CREAT | O_TRUNC, 0644);
+    if (outputFile == -1) {
         std::cerr << "Error: No se pudo crear el archivo comprimido." << std::endl;
-        close(inputFd);
+        close(inputFile);
         return -1;
     }
     
     char current, previous;
     unsigned char count = 0;
     ssize_t bytesRead;
-    bytesRead = read(inputFd, &previous, 1);
+    bytesRead = read(inputFile, &previous, 1);
     if (bytesRead <= 0) {
-        close(inputFd);
-        close(outputFd);
+        close(inputFile);
+        close(outputFile);
         return -1;
     }
     count = 1;
     
-    while ((bytesRead = read(inputFd, &current, 1)) > 0) {
+    while ((bytesRead = read(inputFile, &current, 1)) > 0) {
         if (current == previous && count < 255) {
             count++;
         } else {
-            write(outputFd, &previous, 1);
-            write(outputFd, &count, 1);
+            write(outputFile, &previous, 1);
+            write(outputFile, &count, 1);
             previous = current;
             count = 1;
         }
     }
     
-    write(outputFd, &previous, 1);
-    write(outputFd, &count, 1);
+    write(outputFile, &previous, 1);
+    write(outputFile, &count, 1);
     
-    close(inputFd);
-    close(outputFd);
+    close(inputFile);
+    close(outputFile);
     
-    std::cout << "Archivo comprimido exitosamente: " << outputFilename << std::endl;
+    std::cout << "Archivo comprimido exitosamente: " << outputFileName << std::endl;
     return 0;
 }
 
 // Descomprime el archivo especificado usando Run-Length Encoding (RLE)
-int decompressFile(const std::string& filename) {
-    int inputFd = open(filename.c_str(), O_RDONLY);
-    if (inputFd == -1) {
+int decompressFile(const std::string& fileName) {
+    int inputFile = open(fileName.c_str(), O_RDONLY);
+    if (inputFile == -1) {
         std::cerr << "Error: No se pudo abrir el archivo comprimido." << std::endl;
         return -1;
     }
     
-    std::string outputFilename = filename.substr(0, filename.find_last_of("."));
-    int outputFd = open(outputFilename.c_str(), O_WRONLY | O_CREAT | O_TRUNC, 0644);
-    if (outputFd == -1) {
+    std::string outputFileName = fileName.substr(0, fileName.find_last_of("."));
+    int outputFile = open(outputFileName.c_str(), O_WRONLY | O_CREAT | O_TRUNC, 0644);
+    if (outputFile == -1) {
         std::cerr << "Error: No se pudo crear el archivo descomprimido." << std::endl;
-        close(inputFd);
+        close(inputFile);
         return -1;
     }
     
@@ -87,33 +87,33 @@ int decompressFile(const std::string& filename) {
     unsigned char count;
     ssize_t bytesRead;
     
-    while ((bytesRead = read(inputFd, &character, 1)) > 0) {
-        if (read(inputFd, &count, 1) != 1) break;
+    while ((bytesRead = read(inputFile, &character, 1)) > 0) {
+        if (read(inputFile, &count, 1) != 1) break;
         for (int i = 0; i < count; i++) {
-            write(outputFd, &character, 1);
+            write(outputFile, &character, 1);
         }
     }
     
-    close(inputFd);
-    close(outputFd);
+    close(inputFile);
+    close(outputFile);
     
-    std::cout << "Archivo descomprimido exitosamente: " << outputFilename << std::endl;
+    std::cout << "Archivo descomprimido exitosamente: " << outputFileName << std::endl;
     return 0;
 }
 
 // Encripta el archivo especificado usando XOR
-int encryptFile(const std::string& filename) {
-    int inputFd = open(filename.c_str(), O_RDONLY);
-    if (inputFd == -1) {
+int encryptFile(const std::string& fileName) {
+    int inputFile = open(fileName.c_str(), O_RDONLY);
+    if (inputFile == -1) {
         std::cerr << "Error: No se pudo abrir el archivo." << std::endl;
         return -1;
     }
 
-    std::string outputFilename = filename + ".enc";
-    int outputFd = open(outputFilename.c_str(), O_WRONLY | O_CREAT | O_TRUNC, 0644);
-    if (outputFd == -1) {
+    std::string outputFileName = fileName + ".enc";
+    int outputFile = open(outputFileName.c_str(), O_WRONLY | O_CREAT | O_TRUNC, 0644);
+    if (outputFile == -1) {
         std::cerr << "Error: No se pudo crear el archivo encriptado." << std::endl;
-        close(inputFd);
+        close(inputFile);
         return -1;
     }
 
@@ -121,31 +121,31 @@ int encryptFile(const std::string& filename) {
     char key = 'Z'; // Clave simple para XOR
     ssize_t bytesRead;
 
-    while ((bytesRead = read(inputFd, &tempChar, 1)) > 0) {
+    while ((bytesRead = read(inputFile, &tempChar, 1)) > 0) {
         tempChar = tempChar ^ key;
-        write(outputFd, &tempChar, 1);
+        write(outputFile, &tempChar, 1);
     }
 
-    close(inputFd);
-    close(outputFd);
+    close(inputFile);
+    close(outputFile);
 
-    std::cout << "Archivo encriptado exitosamente: " << outputFilename << std::endl;
+    std::cout << "Archivo encriptado exitosamente: " << outputFileName << std::endl;
     return 0;
 }
 
 // Desencripta el archivo especificado usando XOR
-int decryptFile(const std::string& filename) {
-    int inputFd = open(filename.c_str(), O_RDONLY);
-    if (inputFd == -1) {
+int decryptFile(const std::string& fileName) {
+    int inputFile = open(fileName.c_str(), O_RDONLY);
+    if (inputFile == -1) {
         std::cerr << "Error: No se pudo abrir el archivo encriptado." << std::endl;
         return -1;
     }
 
-    std::string outputFilename = filename.substr(0, filename.find_last_of("."));
-    int outputFd = open(outputFilename.c_str(), O_WRONLY | O_CREAT | O_TRUNC, 0644);
-    if (outputFd == -1) {
+    std::string outputFileName = fileName.substr(0, fileName.find_last_of("."));
+    int outputFile = open(outputFileName.c_str(), O_WRONLY | O_CREAT | O_TRUNC, 0644);
+    if (outputFile == -1) {
         std::cerr << "Error: No se pudo crear el archivo desencriptado." << std::endl;
-        close(inputFd);
+        close(inputFile);
         return -1;
     }
 
@@ -153,22 +153,22 @@ int decryptFile(const std::string& filename) {
     char key = 'Z'; // Clave simple para XOR
     ssize_t bytesRead;
 
-    while ((bytesRead = read(inputFd, &tempChar, 1)) > 0) {
+    while ((bytesRead = read(inputFile, &tempChar, 1)) > 0) {
         tempChar = tempChar ^ key;
-        write(outputFd, &tempChar, 1);
+        write(outputFile, &tempChar, 1);
     }
 
-    close(inputFd);
-    close(outputFd);
+    close(inputFile);
+    close(outputFile);
 
-    std::cout << "Archivo desencriptado exitosamente: " << outputFilename << std::endl;
+    std::cout << "Archivo desencriptado exitosamente: " << outputFileName << std::endl;
     return 0;
 }
 
 // Lee y muestra el contenido de un archivo comprimido
-int readCompressedFile(const std::string& filename) {
-    int inputFd = open(filename.c_str(), O_RDONLY);
-    if (inputFd == -1) {
+int readCompressedFile(const std::string& fileName) {
+    int inputFile = open(fileName.c_str(), O_RDONLY);
+    if (inputFile == -1) {
         std::cerr << "Error: No se pudo abrir el archivo comprimido." << std::endl;
         return -1;
     }
@@ -177,19 +177,19 @@ int readCompressedFile(const std::string& filename) {
     unsigned char count;
     ssize_t bytesRead;
     
-    while ((bytesRead = read(inputFd, &character, 1)) > 0) {
-        if (read(inputFd, &count, 1) != 1) break;
+    while ((bytesRead = read(inputFile, &character, 1)) > 0) {
+        if (read(inputFile, &count, 1) != 1) break;
         std::cout << "Caracter: " << character << ", Conteo: " << (int)count << std::endl;
     }
     
-    close(inputFd);
+    close(inputFile);
     return 0;
 }
 
 // Lee y muestra el contenido de un archivo encriptado
-int readEncryptedFile(const std::string& filename) {
-    int inputFd = open(filename.c_str(), O_RDONLY);
-    if (inputFd == -1) {
+int readEncryptedFile(const std::string& fileName) {
+    int inputFile = open(fileName.c_str(), O_RDONLY);
+    if (inputFile == -1) {
         std::cerr << "Error: No se pudo abrir el archivo encriptado." << std::endl;
         return -1;
     }
@@ -199,13 +199,13 @@ int readEncryptedFile(const std::string& filename) {
     ssize_t bytesRead;
     
     std::cout << "Contenido del archivo encriptado (en hexadecimal):" << std::endl;
-    while ((bytesRead = read(inputFd, &tempChar, 1)) > 0) {
+    while ((bytesRead = read(inputFile, &tempChar, 1)) > 0) {
         tempChar = tempChar ^ key;
         std::cout << std::hex << std::uppercase << (int)(unsigned char)tempChar << " ";
     }
     std::cout << std::dec << std::endl; // Volver a decimal
 
-    close(inputFd);
+    close(inputFile);
     return 0;
 }
 
