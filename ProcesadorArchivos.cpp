@@ -109,7 +109,7 @@ int encryptFile(const std::string& fileName) {
         return -1;
     }
 
-    std::string outputFileName = fileName + ".enc";
+    std::string outputFileName = fileName + ".xor";
     int outputFile = open(outputFileName.c_str(), O_WRONLY | O_CREAT | O_TRUNC, 0644);
     if (outputFile == -1) {
         std::cerr << "Error: No se pudo crear el archivo encriptado." << std::endl;
@@ -118,7 +118,7 @@ int encryptFile(const std::string& fileName) {
     }
 
     char tempChar;
-    char key = 'Z'; // Clave simple para XOR
+    char key = 'Z'; 
     ssize_t bytesRead;
 
     while ((bytesRead = read(inputFile, &tempChar, 1)) > 0) {
@@ -150,7 +150,7 @@ int decryptFile(const std::string& fileName) {
     }
 
     char tempChar;
-    char key = 'Z'; // Clave simple para XOR
+    char key = 'Z'; 
     ssize_t bytesRead;
 
     while ((bytesRead = read(inputFile, &tempChar, 1)) > 0) {
@@ -195,7 +195,7 @@ int readEncryptedFile(const std::string& fileName) {
     }
 
     char tempChar;
-    char key = 'Z'; // Clave simple para XOR
+    char key = 'Z'; 
     ssize_t bytesRead;
     
     std::cout << "Contenido del archivo encriptado (en hexadecimal):" << std::endl;
@@ -203,7 +203,7 @@ int readEncryptedFile(const std::string& fileName) {
         tempChar = tempChar ^ key;
         std::cout << std::hex << std::uppercase << (int)(unsigned char)tempChar << " ";
     }
-    std::cout << std::dec << std::endl; // Volver a decimal
+    std::cout << std::dec << std::endl; 
 
     close(inputFile);
     return 0;
